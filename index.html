@@ -5,352 +5,158 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FloodFix — Meme Coin</title>
 
-  <!-- ---- Styles ---- -->
   <style>
-    *{
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* Reset + base */
+    *{ box-sizing:border-box; margin:0; padding:0; }
     :root{
-      --accent: #00eaff;
-      --bg: #071024;
-      --card-bg: #0b1622;
-      --muted: #98a3b3;
+      --accent:#00eaff;
+      --bg:#071024;
+      --card-bg:#0b1622;
+      --muted:#98a3b3;
       --glass: rgba(255,255,255,0.03);
     }
+    html,body{ height:100%; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#06101a 0%, #071827 60%); color:#e6faff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
-    html,body{
-      height:100%;
-      margin:0;
-      font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#06101a 0%, #071827 60%);
-      color: #e6faff;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+    /* particles layer */
+    #particles-wrapper{ position:fixed; inset:0; z-index:0; pointer-events:none; }
 
-    /* particles canvas wrapper - sits behind everything */
-    #particles-wrapper{
-      position:fixed;
-      inset:0;
-      z-index:0; /* behind content */
-      pointer-events:none; /* clicks pass through */
-    }
+    /* page content above particles */
+    .page{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
 
-    /* page container sits above particles */
-    .page {
-      position:relative;
-      z-index:1;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-    }
-
-    /* ---- NAVBAR ---- */
-    nav {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:1rem;
-      padding:14px 26px;
+    /* NAV */
+    nav{
+      display:flex; align-items:center; justify-content:space-between; gap:1rem;
+      padding:12px 18px;
       background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
       backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      position:sticky;
-      top:0;
-      z-index:5;
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      position:sticky; top:0; z-index:6;
     }
+    .nav-left{ display:flex; align-items:center; gap:12px; }
+    .nav-logo{ height:40px; width:auto; max-width:140px; object-fit:contain; border-radius:8px; background:rgba(255,255,255,0.02); padding:4px; }
 
-    .nav-left, .nav-right {
-      display:flex;
-      align-items:center;
-      gap:16px;
-    }
+    /* links (desktop) */
+    .nav-links{ display:block; }
+    .nav-links ul{ display:flex; gap:8px; list-style:none; margin:0; padding:6px; background: rgba(10,15,30,0.45); border-radius:999px; border:1px solid rgba(0,240,255,0.12); box-shadow:0 0 18px rgba(0,240,255,0.08); align-items:center; }
+    .nav-links li{ margin:0; }
+    .nav-links a{ display:inline-block; color:var(--muted); text-decoration:none; font-weight:600; padding:6px 10px; border-radius:999px; font-size:14px; transition: all .18s; }
+    .nav-links a:hover{ color:#071217; background:linear-gradient(135deg,#00f0ff,#a34aff); box-shadow:0 6px 18px rgba(0,234,255,0.12); transform:translateY(-2px); color:#001219; }
 
-    /* Logo image: limit its height so it doesn't blow up the navbar */
-    .nav-logo {
-      display:block;
-      height:44px;          /* <-- change this to make logo smaller/bigger */
-      max-height:48px;
-      width:auto;
-      object-fit:contain;
-      border-radius:8px;
-      background: rgba(255,255,255,0.02);
-      padding:4px;
-    }
+    .nav-right{ display:flex; gap:10px; align-items:center; }
+    .btn{ padding:10px 16px; border-radius:12px; border:0; cursor:pointer; background:linear-gradient(90deg,var(--accent),#46f1ff); color:#001219; font-weight:700; box-shadow:0 8px 28px rgba(0,234,255,0.08); }
+    .btn.secondary{ background:transparent; color:var(--accent); border:1px solid rgba(0,234,255,0.08); box-shadow:none; }
 
-    .nav-links a {
-      color:var(--muted);
-      text-decoration:none;
-      padding:6px 10px;
-      border-radius:6px;
-      font-size:15px;
-    }
-    .nav-links a:hover{ color:var(--accent); }
-    nav ul {
-    display: flex;
-    list-style: none;
-    background: rgba(10, 15, 30, 0.7);
-   border-radius: 999px;
-    border: 1px solid rgba(0, 240, 255, 0.25);
-   box-shadow: 0 0 18px rgba(0, 240, 255, 0.18);
-    padding: 6px 10px;
-}
-    nav ul li {
-    margin: 0 6px;
-    }
-    nav ul li a {
-    color: #f1f1f1;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 14px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    transition: color 0.3s, background 0.3s, box-shadow 0.3s, transform 0.15s;
-}
+    /* mobile menu toggle */
+    .menu-toggle{ display:none; font-size:24px; color:var(--accent); background:transparent; border:0; cursor:pointer; padding:6px; }
 
-    nav ul li a:hover {
-    color: #0a0f1c;
-    background: linear-gradient(135deg, #00f0ff, #ff007a);
-    box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
-    transform: translateY(-1px);
-    }
-    nav ul li a.active {
-    color: #0a0f1c;
-    background: linear-gradient(135deg, #ff007a, #00f0ff);
-    box-shadow: 0 0 20px rgba(255, 0, 122, 0.8);
-    }
+    /* HERO */
+    .hero{ padding:56px 18px; display:flex; gap:20px; align-items:flex-start; justify-content:space-between; }
+    .hero-content{ max-width:720px; width:100%; }
+    h1{ font-size:36px; line-height:1.05; margin-bottom:10px; color:#e6fbff; }
+    p.lead{ color:var(--muted); margin-bottom:12px; font-size:15px; }
 
-     /* Mobile menu icon (hidden by default) */
-     .menu-toggle {
-      display: none;
-      font-size: 26px;
-      color: #00f0ff;
-      cursor: pointer;
-     }
-  
-    /* ---- HERO / WELCOME ---- */
-    .hero {
-      padding:72px 26px 40px;
-      display:flex;
-      gap:36px;
-      align-items:center;
-      justify-content:space-between;
-    }
+    /* CTA */
+    .cta{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
 
-    .hero-content {
-      max-width:720px;
-    }
-
-    h1{
-      font-size:44px;
-      margin:0 0 10px;
-      line-height:1.05;
-      color: #e6fbff;
-    }
-    p.lead{ color:var(--muted); margin:0 0 18px; font-size:16px; }
-
-    /* Call to action */
-    .cta {
-      display:flex;
-      gap:12px;
-      margin-top:18px;
-    }
-    .btn {
-      padding:12px 18px;
-      border-radius:12px;
-      border:0;
-      cursor:pointer;
-      background:linear-gradient(90deg,var(--accent), #46f1ff);
-      color:#001219;
-      font-weight:600;
-      box-shadow:0 6px 20px rgba(0,234,255,0.12);
-    }
-    .btn.secondary{
-      background:transparent;
-      color:var(--accent);
-      border:1px solid rgba(0,234,255,0.08);
-      box-shadow:none;
-    }
-
-    /* ---- Image container + hover effects ---- */
-    .image-container {
-      display:flex;
-      flex-wrap:wrap;
-      gap:18px;
-      margin-top:16px;
-    }
-    .image-card {
-      width:200px;           /* default card size - change as needed */
-      height:200px;
+    /* image / nft grid + floating/glow */
+    .image-container{ display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; }
+    .image-card{
+      width:170px; height:170px;
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      transition:transform .28s ease, box-shadow .28s ease;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      border-radius:14px; padding:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; transition: transform .32s, box-shadow .32s;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.45);
     }
-    .image-card img {
-      width:100%;
-      height:100%;
-      object-fit:cover; /* ensures the image fills the box without stretching */
-      border-radius:10px;
-      display:block;
-      transition: transform .35s ease, filter .35s ease;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));
-    }
-    .image-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 18px 32px rgba(0,234,255,0.12);
-    }
-    .image-card:hover img {
-      transform: scale(1.06);
-      filter: drop-shadow(0 22px 30px rgba(0,234,255,0.12));
-    }
+    .image-card img{ width:100%; height:100%; object-fit:cover; border-radius:10px; transition: transform .36s ease, filter .36s ease; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)); }
+    .image-card:hover{ transform: translateY(-8px); box-shadow: 0 24px 48px rgba(0,234,255,0.12); }
+    .image-card:hover img{ transform: scale(1.08); filter: drop-shadow(0 28px 40px rgba(0,234,255,0.18)); }
 
-    /* ---- Lists: remove bullets & containerize ---- */
-    .list-container {
-      background: var(--card-bg);
-      border-radius:12px;
-      padding:18px;
-      margin:12px 0;
-    }
-    .list-container ul {
-      list-style:none;     /* <-- removes bullets */
-      padding-left:0;
-      margin:0;
-    }
-    .list-container li {
-      padding:8px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.03);
-    }
-    .list-container li:last-child { border-bottom: none; }
-
-    /* separating multiple lists */
-    .list-divider { height:14px; } /* add between lists to separate visually */
-
-    /* ---- NFT Box: force inside container ---- */
-    .nft-box {
-      width:340px;
-      height:340px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:16px;
-      overflow:hidden; /* ensures NFT does not escape the box */
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:12px;
-    }
-    .nft-box img {
-      max-width:100%;
-      max-height:100%;
-      object-fit:contain; /* keeps aspect ratio, fits inside */
-      border-radius:10px;
-      transition: transform .3s ease;
-    }
-    .nft-box img:hover { transform: scale(1.04); }
-
-    /* ---- ROADMAP - curvy svg + waves behind ---- */
-    .roadmap-wrap {
-      position:relative;
-      padding:64px 26px;
-      min-height:420px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:visible;
-    }
-
-    /* wave layer (behind roadmap) */
-    .waves {
-      position:absolute;
-      inset:0;
-      z-index:0;
+    /* small glowing "sky" halo behind images - pseudo element */
+    .image-card::before{
+      content:''; position:absolute; inset:auto; width:70%; height:70%; border-radius:50%;
+      filter: blur(18px); opacity:0.0; transition:opacity .3s;
+      background: radial-gradient(circle at 30% 30%, rgba(0,234,255,0.22), transparent 40%);
       pointer-events:none;
-      opacity:0.85;
     }
-    .roadmap-content {
-      position:relative;
-      z-index:2;
-      width:100%;
-      max-width:1100px;
-    }
+    .image-card:hover::before{ opacity:1; }
 
-    .roadmap-svg { width:100%; height:280px; }
+    /* NFT hero box */
+    .nft-box{
+      width:320px; height:320px; border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+    .nft-box img{ max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; transition:transform .36s; }
+    .nft-box:hover img{ transform:scale(1.03); }
 
-    /* roadmap markers styling */
-    .marker {
-      fill: #00eaff;
-      stroke: #05202a;
-      stroke-width:2;
-      filter: drop-shadow(0 8px 18px rgba(0,234,255,0.12));
-    }
-    .marker-label {
-      fill:#e8fbff;
-      font-size:13px;
-    }
+    /* small floating animation */
+    @keyframes floatY { 0%{ transform:translateY(0) } 50%{ transform:translateY(-8px)} 100%{ transform:translateY(0)} }
+    .float{ animation: floatY 5.5s ease-in-out infinite; }
 
-    /* wave animation (translate) */
-    @keyframes waveMove {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-    .wave-row {
-      display:flex;
-      width:200%;
-      height:80px;
-      transform: translateX(0);
-      animation: waveMove 12s linear infinite;
-      opacity:0.55;
-    }
-    /* small responsive tweaks */
-    @media (max-width:900px){
-      .hero{ flex-direction:column; align-items:flex-start; }
-      .nft-box{ width:260px; height:260px; }
-      .image-card{ width:150px; height:150px; }
-    }
+    /* list containers */
+    .list-container{ background:var(--card-bg); border-radius:12px; padding:16px; margin:12px 0; }
+    .list-container ul{ list-style:none; padding-left:0; margin:0; }
+    .list-container li{ padding:8px 0; border-bottom: 1px dashed rgba(255,255,255,0.03); font-size:15px; color:#dff7ff; }
+    .list-container li:last-child{ border-bottom:none; }
+
+    /* ROADMAP */
+    .roadmap-wrap{ position:relative; padding:46px 18px; overflow:visible; background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent); }
+    .waves{ position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0.9; }
+    .roadmap-content{ position:relative; z-index:2; max-width:1100px; margin:0 auto; }
+
+    .roadmap-svg{ width:100%; height:260px; display:block; }
+
+    .marker{ fill:var(--accent); stroke:#05202a; stroke-width:2; filter: drop-shadow(0 8px 18px rgba(0,234,255,0.12)); }
+    .marker-label{ fill:#e8fbff; font-size:13px; }
 
     /* footer */
-    footer {
-      padding:26px;
-      text-align:center;
-      color:var(--muted);
-      background:linear-gradient(180deg, transparent, rgba(255,255,255,0.01));
-      border-top:1px solid rgba(255,255,255,0.02);
+    footer{ padding:18px; text-align:center; color:var(--muted); border-top:1px solid rgba(255,255,255,0.02); margin-top:18px; }
+
+    /* Responsive: mobile adjustments */
+    @media (max-width:880px){
+      .hero{ flex-direction:column; padding:36px 14px; gap:18px; }
+      .nav-links{ display:none; } /* hide desktop links on mobile */
+      .menu-toggle{ display:inline-block; }
+      .nav-right{ gap:8px; }
+      .nft-box{ width:260px; height:260px; }
+      .image-card{ width:130px; height:130px; }
+      h1{ font-size:28px; }
     }
+
+    /* When mobile menu is open (class `.nav-open` on nav) show menu vertically */
+    nav.nav-open .nav-links{
+      display:block; position: absolute; top:64px; left:12px; right:12px; z-index:7;
+      background: linear-gradient(180deg, rgba(6,12,20,0.95), rgba(6,12,20,0.92)); border-radius:12px; padding:12px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+    }
+    nav.nav-open .nav-links ul{
+      display:flex; flex-direction:column; gap:8px; padding:6px;
+    }
+    nav.nav-open .nav-right{ display:flex; gap:8px; margin-top:8px; flex-direction:row; justify-content:center; width:100%; }
+
+    /* ensure large images don't overflow on tiny screens */
+    img{ max-width:100%; display:block; height:auto; }
+
   </style>
 </head>
 <body>
-
-  <!-- PART 1: particles canvas (behind content) -->
-  <div id="particles-wrapper">
-    <!-- tsparticles injects a canvas here -->
-    <div id="tsparticles"></div>
-  </div>
+  <!-- particles container -->
+  <div id="particles-wrapper"><div id="tsparticles" style="position: absolute; inset:0;"></div></div>
 
   <div class="page">
-
     <!-- NAV -->
-    <nav>
+    <nav id="site-nav">
       <div class="nav-left">
-        <!-- PLACEHOLDER: add your logo image here.
-             Replace "logo.png" with path to your image.
-             The .nav-logo class controls its final size. -->
+        <!-- Logo: replace f5.jpg with your logo path -->
         <img src="f5.jpg" alt="FloodFix logo" class="nav-logo" />
 
-        <div class="nav-links">
+        <div class="nav-links" id="nav-links">
           <ul>
-             <li><a href="#home">Home</a></li>
-             <li><a href="#buy">Flox Buy</a></li>
-             <li><a href="#tokenomics">Tokenomics</a></li>
-             <li><a href="#nft">Flox NFT</a></li>
-             <li><a href="#roadmap">Roadmap</a></li>
-             <li><a href="#whitepaper">Whitepaper</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#buy">Flox Buy</a></li>
+            <li><a href="#tokenomics">Tokenomics</a></li>
+            <li><a href="#nft">Flox NFT</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#whitepaper">Whitepaper</a></li>
             <li><a href="#gamefi">GameFi</a></li>
           </ul>
         </div>
@@ -359,107 +165,23 @@
       <div class="nav-right">
         <button class="btn" onclick="buyFlox()">Buy FLOX</button>
         <a class="btn secondary" href="#whitepaper">Whitepaper</a>
+        <!-- hamburger for mobile -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
       </div>
     </nav>
-    <!-- Mobile menu icon -->
-    <div class="menu-toggle">☰</div>
-    <!-- HERO / HOME -->
+
+    <!-- HERO -->
     <header id="home" class="hero">
       <div class="hero-content">
-        <h1>Welcome to <b>FloodFix</b>  <span style="color:var(--accent)">FLOX</span></h1>
+        <h1>Welcome to <strong>FloodFix</strong> <span style="color:var(--accent)">FLOX</span></h1>
         <p class="lead">Meme coin with utility NFTs, GameFi & community flood protection.</p>
-        <p><ul><h3>The Meme Coin That Fixes the Chaosh</h3>
-
-<li>Meet FloodFix, the world’s first meme-powered ecosystem built around the heroic Floodi your <B>MOON BAG</B>, chaos-repairing mascot on a mission to save the <b>Bear market</b> and bring memes back to life.
-
-Born from lore, shaped by community, and fueled by fun, FloodFix blends storytelling, NFTs, and play-to-earn mechanics into one unique movement. Whether you're here for the memes, the gains, or the gamified ecosystem, you’re early and right on time.</li>
-
-<H3>🚀 What Is FloodFix?</H3>
-
-<li>FloodFix is a meme coin and evolving universe building on <B>SOLANA BLOCKCHAIN</B>, a quirky water spirit determined to repair the world one mission at a time.
-The project combines:
-
-<p>$FLOODFIX Token <b>-</b> powering rewards, utility, and the entire ecosystem </p>
-
-<p>Floodi NFTs <b>-</b> playable characters, collectibles, and boosters</p>
-
-<p>P2E Mini-Game <b>-</b>send your Floodi to fix facilities, earn points & tokens</p>
-
-<p>Lore <b>+</b> Memes <b>-</b> an expanding world of villains, crocs, dam breakers, and chaos</p>
-
-
-<b>FloodFix is fun first, community always, and utility forever expanding. </b> </li>
-
-<h3>🧩 Why FloodFix?</h3>
-
-<li>FloodFix isn't just another meme coin, it's a full ecosystem designed to grow with its holders:
-
-<p>🔹 Story-driven universe</p>
-
-<p>🔹 Organic meme culture</p>
-
-<p>🔹 Locked liquidity for trust</p>
-
-<p>🔹 P2E fun & future expansions</p>
-
-<p>🔹 Cross-game collaboration potential</p>
-
-<p>🔹 Seasonal drops & long-term sustainability</p>
-
-
-<b>This is the meme coin you don’t just hold, you experience.</b></li>
-
-
-
-<h3>📘 The Floodi Story: The Rise Begins</h3>
-
-</li>In the early days, the Floodi emerged from the tides to confront rising chaos.
-Their mission? Repair the world, one broken facility at a time.
-With each new Floodi born, the community grows stronger, unlocking new missions, new lore, and new enemies challenging the waters.
-
-Your Floodi isn’t just a meme, it’s a hero in an expanding universe. </li>
-
-
-<h3>🗺 Powered by the Roadmap </h3>
-
-<li>Every part of FloodFix’s future is already in motion:
-
-<p><h4> Relaunch & Foundation</h4>
-
-The rise of $FLOODFIX begins with community building, early branding, lore reveal, early collaborations, and locked liquidity. </p>
-
-<p><h4>Genesis Floodi NFTs </h4>
-
-A limited 20–100 character drop offering early recognition, game boosts, and expansion whitelist spots.</p>
-
- <p><h4>P2E Mini-Game </h4>
-
-A simple but addictive mission-based game where you send your Floodi to repair facilities and earn $FLOODFIX. </p>
-
-<p><h4> Ecosystem Growth </h4>
-
-New characters, new missions, second NFT collection, partnerships, and map expansions.</p>
-
-<p><h4>Long-Term Vision </h4>
-
-A community-driven universe with broader token utility, cross-game collaborations, and eternal seasonal updates. </p>
-
-
-<h3>🌐 Join the Flood</h3>
-
-<li>FloodFix is building something fun, interactive, and long-lasting. Blending memes, gaming, NFTs, and community energy into a single wave.
-
-Get your Floodi. Hold your tokens. Fix the chaos.
-Welcome to the Flood.🌊</li></ul></p>
 
         <div class="list-container">
-          <!-- Example of a list in a container (no bullets) -->
-          <h3 style="margin:0 0 8px 0">Welcome to FloodFix🌊</h3>
+          <h3 style="margin-bottom:8px">The Meme Coin That Fixes the Chaos</h3>
           <ul>
-            <li>Community first tokenomics</li>
-            <li>Fair launches & airdrops</li>
-            <li>GameFi rewards for holders</li>
-            <li>NFT collection with utility</li>
+            <li><strong>Meet FloodFix</strong> — the world’s first meme-powered ecosystem built around Floodi, your chaos-repairing mascot.</li>
+            <li><strong>What It Combines:</strong> $FLOODFIX token, Floodi NFTs, P2E mini-games, lore & seasonal drops.</li>
+            <li><strong>Why FloodFix:</strong> Story-driven universe, locked liquidity, GameFi rewards, cross-game potential.</li>
           </ul>
         </div>
 
@@ -468,60 +190,54 @@ Welcome to the Flood.🌊</li></ul></p>
           <button class="btn secondary" onclick="document.querySelector('#roadmap').scrollIntoView({behavior:'smooth'})">See Roadmap</button>
         </div>
 
-        <!-- images / nft previews: replace srcs with your images -->
+        <!-- image previews (replace src with your NFT images) -->
         <div class="image-container" aria-hidden="true">
-          <div class="image-card"><img src="f3.jpg" alt="NFT 1 (replace)"></div>
-          <div class="image-card"><img src="f6.jpg" alt="NFT 2 (replace)"></div>
-          <div class="image-card"><img src="f4.jpg" alt="NFT 3 (replace)"></div>
+          <div class="image-card float"><img src="f3.jpg" alt="NFT 1 (replace)"></div>
+          <div class="image-card float"><img src="f6.jpg" alt="NFT 2 (replace)"></div>
+          <div class="image-card float"><img src="f4.jpg" alt="NFT 3 (replace)"></div>
         </div>
       </div>
 
-      <!-- NFT box / hero visual -->
-      <aside class="nft-box" aria-hidden="true">
-        <!-- place your hero NFT artwork here -->
+      <!-- Hero NFT box -->
+      <aside class="nft-box float" aria-hidden="true">
         <img src="f8.jpg" alt="Hero NFT (replace)">
       </aside>
     </header>
 
-    <!-- FLOX Buy Section -->
-    <section id="buy" style="padding:40px 26px;">
+    <!-- FLOX Buy -->
+    <section id="buy" style="padding:24px 18px;">
       <div class="list-container">
         <h3>Flox Buy</h3>
-        <p class="lead" style="margin-top:8px"><h1><B><span style="color: red;"> COMING SOOON!!</span></B></h1></p>
-        <!-- PLACEHOLDER: Add your buy widget code or iframe inside this div -->
-        <div id="buy-widget" style="margin-top:12px;"><B><span style="color: red;"> COMING SOOON!!</span></B></div>
+        <p class="lead">Add your buy widget inside the container below.</p>
+        <div id="buy-widget" style="margin-top:12px;"><strong><span style="color:red">COMING SOON!!</span></strong></div>
       </div>
     </section>
 
     <!-- Tokenomics -->
-    <section id="tokenomics" style="padding:26px;">
+    <section id="tokenomics" style="padding:18px;">
       <div class="list-container">
         <h3>Tokenomics</h3>
         <ul>
-          <li><B><span style="color: red;"> COMING SOOON!!</span></B></li>
+          <li><strong>COMING SOON</strong> — add token allocation graphic or table here.</li>
         </ul>
       </div>
     </section>
 
     <!-- FLOX NFT -->
-    <section id="nft" style="padding:26px;">
-      <h2>Flox NFT</h2>
-      <div class="image-container" style="margin-top:12px;">
-        <!-- NFT cards - each inside .image-card, they will be contained -->
-        <div class="image-card"><img src="f3.jpg" alt="NFT A"></div>
-        <div class="image-card"><img src="f7.jpg" alt="NFT B"></div>
-        <div class="image-card"><img src="f1.jpg" alt="NFT C"></div>
+    <section id="nft" style="padding:18px;">
+      <h2 style="margin-bottom:12px">Flox NFT</h2>
+      <div class="image-container" aria-hidden="true">
+        <div class="image-card float"><img src="f3.jpg" alt="NFT A (replace)"></div>
+        <div class="image-card float"><img src="f7.jpg" alt="NFT B (replace)"></div>
+        <div class="image-card float"><img src="f1.jpg" alt="NFT C (replace)"></div>
       </div>
     </section>
 
     <!-- ROADMAP -->
     <section id="roadmap" class="roadmap-wrap">
-      <!-- animated wave background(s) -->
-      <div class="waves">
-        <!-- Two stacked wave strips for depth -->
+      <div class="waves" aria-hidden="true">
         <div style="position:absolute;bottom:0;left:0;width:100%;overflow:hidden;height:80px;">
-          <div class="wave-row">
-            <!-- simple svg wave repeated -->
+          <div style="display:flex; width:200%; animation: translateX 14s linear infinite;">
             <svg viewBox="0 0 1200 80" preserveAspectRatio="xMinYMin slice" style="width:1200px;height:80px;">
               <path d="M0,40 C150,10 300,70 450,40 C600,10 750,70 900,40 C1050,10 1200,70 1350,40 L1350,80 L0,80 Z" fill="#002f3a" opacity="0.65"></path>
             </svg>
@@ -533,216 +249,96 @@ Welcome to the Flood.🌊</li></ul></p>
       </div>
 
       <div class="roadmap-content">
-        <h2 style="margin-bottom:18px;">Roadmap</h2>
-        <!-- CURVY ROAD SVG -->
+        <h2 style="margin-bottom:12px">Roadmap</h2>
+
+        <!-- simple curvy road -->
         <svg class="roadmap-svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <!-- background */
           <defs>
             <linearGradient id="roadG" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#122a33"/>
-              <stop offset="1" stop-color="#05202a"/>
+              <stop offset="0" stop-color="#122a33"/><stop offset="1" stop-color="#05202a"/>
             </linearGradient>
-            <filter id="blurGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="8" result="b"/>
-              <feMerge>
-                <feMergeNode in="b"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
 
-          <!-- road (thick path) -->
+          <!-- road -->
           <path d="M30,220 C200,180 300,60 480,100 C660,140 780,60 980,90 C1100,110 1170,90 1170,90"
                 stroke="url(#roadG)" stroke-width="36" stroke-linecap="round" fill="none" opacity="0.98"></path>
 
-          <!-- dashed center line -->
+          <!-- dashed center -->
           <path d="M30,220 C200,180 300,60 480,100 C660,140 780,60 980,90 C1100,110 1170,90 1170,90"
-                stroke="#9feeff" stroke-width="6" stroke-dasharray="18 26" stroke-linecap="round" fill="none" opacity="0.9"></path>
+                stroke="#9feeff" stroke-width="6" stroke-dasharray="16 24" stroke-linecap="round" fill="none" opacity="0.95"></path>
 
-          <!-- markers on the road (flood points) - place them at different path coords -->
-          <!-- Marker 1 -->
-          <g transform="translate(120,205)">
-            <circle class="marker" r="14"></circle>
-            <text x="30" y="6" class="marker-label">Relaunch & Foundation
-
-FloodFix begins with a refreshed ecosystem built on transparency, community, and strong foundational lore.
-Key Milestones:
-
-Relaunch of $FLOODFIX
-
-Community setup & onboarding
-
-Lore reveal: The Rise of the Floodi
-
-Early memes, branding, and identity building
-
-Fair distribution of dev tokens
-
-Light marketing push & early collaborations
-
-Strengthening trust through locked liquidity </text>
-          </g>
-
-          <!-- Marker 2 -->
-          <g transform="translate(420,115)">
-            <circle class="marker" r="14"></circle>
-            <text x="30" y="6" class="marker-label">Genesis Floodi NFTs
-
- Introducing the first-ever Floodi characters—limited, collectible, and built for long-term utility.
-Key Milestones:
-
-Release of 20–100 Genesis Floodi NFTs
-
-Utility: boosts and advantages in the upcoming mini-game
-
-Early holders receive recognition + whitelist for expansions
-
-Revenue supports development of the game prototype</text>
-          </g>
-
-          <!-- Marker 3 -->
-          <g transform="translate(690,135)">
-            <circle class="marker" r="14"></circle>
-            <text x="30" y="6" class="marker-label">FloodFix P2E Mini-Game
-
-A fun, mission-based play-to-earn experience where players repair the world one facility at a time.
-Key Milestones:
-
-Launch of simple but engaging repair-mission gameplay
-
-Send your Floodi to fix map facilities
-
-Seasonal events, leaderboards, and progression rewards
-
-Earn $FLOODFIX by participating</text>
-          </g>
-
-          <!-- Marker 4 -->
-          <g transform="translate(980,95)">
-            <circle class="marker" r="14"></circle>
-            <text x="30" y="6" class="marker-label">Ecosystem Growth
-
-Expansion beyond the basics—more characters, more lore, and more opportunities for community engagement.
-Key Milestones:
-
-New Floodi characters: villains, crocs, dam breakers, and more
-
-Second NFT collection
-
-Additional missions, maps, and world-building
-
-Strategic partnerships & small collaborations </text>
-          </g>
-        </svg>
-          <!-- Marker 4 -->
-          <g transform="translate(980,95)">
-            <circle class="marker" r="14"></circle>
-            <text x="30" y="6" class="marker-label">Long-Term Vision
-
-FloodFix evolves into a community-driven, collaborative, cross-game universe.
-Key Milestones:
-
-Transition to a fully community-governed ecosystem
-
-Additional utilities for NFTs + the $FLOODFIX token
-
-Cross-game collaborations & integrations
-
-Seasonal updates, sustainable drops, and a forever-active meme culture</text>
-          </g>
+          <!-- markers -->
+          <circle class="marker" cx="120" cy="205" r="12"></circle>
+          <circle class="marker" cx="420" cy="115" r="12"></circle>
+          <circle class="marker" cx="690" cy="135" r="12"></circle>
+          <circle class="marker" cx="980" cy="95" r="12"></circle>
         </svg>
 
-        <!-- Below the svg you can put details -->
-        <div style="margin-top:18px;">
+        <!-- Roadmap details below for responsive layout -->
+        <div style="margin-top:14px;">
           <div class="list-container">
             <ul>
-              <li><strong>Phase 1</strong> 🌊 Token launch, initial liquidity</li>
-              <li><strong>Phase 2</strong> 🌊 Community airdrops & ambassador program</li>
-              <li><strong>Phase 3</strong> 🌊 NFT mint + marketplace</li>
-              <li><strong>Phase 4</strong> 🌊 GameFi beta & staking</li>
+              <li><strong>Relaunch & Foundation</strong> — Community building, lore reveal, early branding, locked liquidity.</li>
+              <li><strong>Genesis Floodi NFTs</strong> — Limited character drop, early-holder perks, game boosts.</li>
+              <li><strong>P2E Mini-Game</strong> — Send your Floodi on missions, earn rewards and $FLOODFIX.</li>
+              <li><strong>Ecosystem Growth</strong> — New characters, collaborations, second NFT collection.</li>
+              <li><strong>Long-Term Vision</strong> — Community governance, cross-game integrations, seasonal updates.</li>
             </ul>
           </div>
         </div>
-
       </div>
     </section>
 
     <!-- Whitepaper -->
-    <section id="whitepaper" style="padding:26px;">
+    <section id="whitepaper" style="padding:18px;">
       <h2>Whitepaper</h2>
       <div class="list-container" style="margin-top:12px;">
-        <!-- add your whitepaper link / embed here -->
-        <p><B><span style="color: red;"> COMING SOOON!!</span></B></p>
+        <p><strong><span style="color:red">COMING SOON!!</span></strong></p>
         <a href="assets/whitepaper.pdf" target="_blank" class="btn">Open Whitepaper</a>
       </div>
     </section>
 
     <!-- GameFi -->
-    <section id="gamefi" style="padding:26px;">
+    <section id="gamefi" style="padding:18px;">
       <h2>GameFi</h2>
       <div class="list-container">
         <p class="lead">Small GameFi integration & reward mechanics go here.</p>
-        <!-- Add game iframe or demo area -->
         <div id="game-area" style="height:240px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;align-items:center;justify-content:center">
           [Add GameFi iframe / canvas here]
         </div>
       </div>
     </section>
 
-    <!-- near-bottom: place things just above footer (FAQ, social) -->
-    <section id="near-bottom" style="padding:26px;">
+    <!-- near-bottom -->
+    <section id="near-bottom" style="padding:18px;">
       <div class="list-container">
         <h3>Join the FloodFix community</h3>
         <ul>
           <li>Telegram: https://t.me/floodfixcommunity</li>
           <li>X: https://x.com/FloodFixx</li>
-          <li>facebook: https://www.facebook.com/share/1BmiSMSXwp/</li>
+          <li>Facebook: https://www.facebook.com/share/1BmiSMSXwp/</li>
         </ul>
       </div>
     </section>
 
-    <footer>
-      © <b>FloodFix</b> |All rights reserved.
-    </footer>
+    <footer>© <strong>FloodFix</strong> | All rights reserved.</footer>
+  </div>
 
-  </div> <!-- /.page -->
-
-  <!-- ---- SCRIPTS ---- -->
-
-  <!-- 1) tsParticles CDN (for particles effect) -->
-  <!-- Replace or pin to a specific version if you prefer -->
+  <!-- tsParticles -->
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.min.js"></script>
-
   <script>
-    /* ================================
-       1) PARTicles: use your JSON here
-       ================================
-       You said you have this JSON:
-       {
-         "particles": {
-           "number": { "value": 80 },
-           "color": { "value": "#00eaff" },
-           "shape": { "type": "circle" },
-           "opacity": { "value": 0.5 },
-           "size": { "value": 3 },
-           "move": { "speed": 1 }
-         }
-       }
-       That is not a complete tsParticles config by itself. Below I merge it into a fuller working config.
-       Paste/replace your values inside the 'particles' object if you want.
-    */
-
+    /* particles config (merged into a working tsParticles config) */
     const particlesConfig = {
-      fullScreen: { enable: false }, // we are injecting into #tsparticles which sits inside #particles-wrapper
+      fullScreen: { enable: false },
       fpsLimit: 60,
       particles: {
         number: { value: 80, density: { enable: true, area: 800 } },
-        color: { value: "#00eaff" },                // your color
+        color: { value: "#00eaff" },
         shape: { type: "circle" },
-        opacity: { value: 0.5 },
+        opacity: { value: 0.45 },
         size: { value: 3, random: { enable: true, minimumValue: 1 } },
-        move: { enable: true, speed: 1, random: false, outModes: { default: "out" } },
-        links: { enable: true, distance: 140, color: "#00eaff", opacity: 0.06, width: 1 },
+        move: { enable: true, speed: 0.9, random: false, outModes: { default: "out" } },
+        links: { enable: true, distance: 140, color: "#00eaff", opacity: 0.06, width: 1 }
       },
       interactivity: {
         events: {
@@ -750,61 +346,55 @@ Seasonal updates, sustainable drops, and a forever-active meme culture</text>
           onClick: { enable: true, mode: "push" },
           resize: true
         },
-        modes: {
-          repulse: { distance: 80 },
-          push: { quantity: 2 }
-        }
+        modes: { repulse: { distance: 80 }, push: { quantity: 2 } }
       },
-      detectRetina: true,
+      detectRetina: true
     };
 
-    // Initialize tsParticles
     window.addEventListener('DOMContentLoaded', async () => {
-      // load into the div with id tsparticles
-      await tsParticles.load("tsparticles", particlesConfig);
+      try {
+        await tsParticles.load("tsparticles", particlesConfig);
+      } catch(e){ console.warn('tsParticles failed to load', e); }
     });
 
-    /* ============================
-       2) Small JS project helpers
-       ============================ */
-
+    /* small helpers */
     function buyFlox(){
-      // replace with your real buy flow / contract integration / widget
       const widget = document.getElementById('buy-widget');
       if(widget && widget.innerHTML.trim().length>0){
-        // If you added a widget, you might want to open it
         alert("Open your buy widget or implement web3 flow here.");
       } else {
         alert("Buy FLOX — add your buy widget code into the #buy-widget container.");
       }
     }
 
-    // Example: separate lists (if you want programmatic separator)
-    function separateLists(selector){
-      // appends a visual divider between sequential ULs inside the parent
-      const parent = document.querySelector(selector);
-      if(!parent) return;
-      const uls = parent.querySelectorAll('ul');
-      uls.forEach((ul, i) => {
-        if(i>0){
-          const div = document.createElement('div');
-          div.className = 'list-divider';
-          ul.parentNode.insertBefore(div, ul);
-        }
-      });
-    }
-    // run on load for any group you want
-    // separateLists('.some-parent');
-
-    // Smooth scroll anchor links (if needed)
+    // Smooth scroll anchors
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
       a.addEventListener('click', function(e){
-        const target = document.querySelector(this.getAttribute('href'));
+        const href = this.getAttribute('href');
+        const target = document.querySelector(href);
         if(target){
           e.preventDefault();
-          target.scrollIntoView({behavior:'smooth'});
+          target.scrollIntoView({ behavior: 'smooth' });
+          // if nav was open (mobile), close it after click
+          document.getElementById('site-nav').classList.remove('nav-open');
         }
       });
+    });
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const siteNav = document.getElementById('site-nav');
+    if(menuToggle){
+      menuToggle.addEventListener('click', ()=>{
+        siteNav.classList.toggle('nav-open');
+      });
+    }
+
+    // Close mobile menu on resize to desktop
+    window.addEventListener('resize', ()=>{
+      if(window.innerWidth > 880){
+        siteNav.classList.remove('nav-open');
+      }
     });
   </script>
 </body>
