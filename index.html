@@ -4,529 +4,280 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FloodFix — Meme Coin</title>
-<style>
-  /* ========== GLOBAL RESET & BASE ========== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Poppins, Arial, sans-serif;
-}
 
-body {
-  background: radial-gradient(circle at top, #071933 0%, #020713 40%, #000000 100%);
-  color: #ffffff;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-}
-
-/* zacht glow rand aan de randen van het scherm */
-body::before {
-  content: "";
-  position: fixed;
-  inset: -50px;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(0, 234, 255, 0.18), transparent 60%),
-    radial-gradient(circle at 100% 0%, rgba(255, 0, 122, 0.18), transparent 60%),
-    radial-gradient(circle at 50% 100%, rgba(0, 234, 255, 0.15), transparent 65%);
-  z-index: -4;
-}
-
-/* ========== NAVBAR ========== */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(3, 8, 25, 0.9),
-    rgba(3, 8, 25, 0.7)
-  );
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
-}
-
-nav img {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: 700;
-  color: #00eaff;
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.9);
-}
-
-/* NAV LINKS WRAPPER */
-nav ul {
-  display: flex;
-  list-style: none;
-  background: rgba(10, 15, 30, 0.7);
-  border-radius: 999px;
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  box-shadow: 0 0 18px rgba(0, 240, 255, 0.18);
-  padding: 6px 10px;
-}
-
-nav ul li {
-  margin: 0 6px;
-}
-
-/* NAV LINKS */
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 10px;
-}
-
-nav ul li a {
-  color: #f1f1f1;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  transition: color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.15s;
-}
-
-nav ul li a:hover {
-  color: #0a0f1c;
-  background: linear-gradient(135deg, #00f0ff, #ff007a);
-  box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
-  transform: translateY(-1px);
-}
-
-nav ul li a.active {
-  color: #0a0f1c;
-  background: linear-gradient(135deg, #ff007a, #00f0ff);
-  box-shadow: 0 0 20px rgba(255, 0, 122, 0.8);
-}
-
-/* ========== HAMBURGER MENU ========== */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-}
-
-.hamburger span {
-  width: 26px;
-  height: 3px;
-  background: #00eaff;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
-  transition: 0.3s;
-}
-
-/* ========== WAVES BACKGROUND ========== */
-.ocean {
-  height: 200px;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.wave {
-  background: url('https://i.imgur.com/0p6HjDd.png');
-  position: absolute;
-  width: 200%;
-  height: 100%;
-  bottom: 0;
-  animation: waveMove 8s linear infinite;
-  opacity: 0.4;
-}
-
-.wave:nth-child(2) {
-  animation-delay: -4s;
-  opacity: 0.2;
-}
-
-@keyframes waveMove {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ========== SECTIONS ========== */
-.section {
-  padding: 120px 40px 80px;
-  text-align: center;
-  min-height: 70vh;
-  position: relative;
-  z-index: 1;
-}
-
-.glow-text {
-  font-size: 40px;
-  color: #00eaff;
-  text-shadow:
-    0 0 14px rgba(0, 234, 255, 0.9),
-    0 0 32px rgba(0, 234, 255, 0.7);
-  letter-spacing: 0.06em;
-}
-
-/* ========== BUTTONS ========== */
-.btn {
-  padding: 12px 26px;
-  background: linear-gradient(135deg, #00eaff, #00ffa3);
-  color: #000;
-  text-decoration: none;
-  font-weight: 700;
-  border-radius: 10px;
-  display: inline-block;
-  margin-top: 18px;
-  transition: 0.2s ease-out;
-  box-shadow: 0 0 16px rgba(0, 234, 255, 0.6);
-}
-
-.btn:hover {
-  transform: translateY(-1px) scale(1.05);
-  box-shadow: 0 0 30px rgba(0, 234, 255, 0.95);
-}
-/* ========== WELCOME BOX ========== */
-.welcome-box {
-  width: 90%;
-  max-width: 600px;
-  margin: 24px auto 10px;
-  padding: 20px 22px;
-  background: radial-gradient(circle at top, rgba(21, 24, 70, 0.95), rgba(5, 10, 38, 0.9));
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  box-shadow:
-    0 0 18px rgba(0, 234, 255, 0.4),
-    0 0 35px rgba(0, 0, 0, 0.9);
-}
-
-.welcome-box ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* ========== TOKENOMICS BOX ========== */
-.token-box {
-  width: 60%;
-  max-width: 720px;
-  margin: 30px auto 0;
-  padding: 25px;
-  background: radial-gradient(circle at top, #02203a, #001020);
-  border: 1px solid #00eaff;
-  border-radius: 16px;
-  box-shadow:
-    0 0 20px rgba(0, 234, 255, 0.5),
-    0 0 40px rgba(0, 0, 0, 0.9);
-  transition: 0.25s ease-out;
-}
-
-.token-box:hover {
-  color: #16cde1;
-  text-shadow: 0 0 12px rgba(255, 0, 122, 0.85);
-  box-shadow:
-    0 0 25px rgba(0, 234, 255, 0.9),
-    0 0 60px rgba(255, 0, 122, 0.5);
-}
-
-/* ========== FLOATING NFT CARDS ========== */
-.floating-nfts {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 40px;
-  flex-wrap: wrap;
-}
-
-.nft-card {
-  width: 180px;
-  height: 180px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 2px solid #00eaff;
-  border-radius: 16px;
-  animation: floatNFT 4s ease-in-out infinite;
-  overflow: hidden;
-  position: relative;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-}
-
-.nft-card:hover {
-  box-shadow: 0 0 30px #00eaff;
-  transform: translateY(-6px) scale(1.05);
-}
-
-.nft-card:nth-child(2) {
-  animation-delay: 1s;
-}
-
-.nft-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  display: block;
-}
-
-@keyframes floatNFT {
-  0%,100% { transform: translateY(0); }
-  50%     { transform: translateY(-18px); }
-}
-
-/* ========== ROADMAP ========== */
-.roadmap-list {
-  list-style: none;
-  margin-top: 20px;
-}
-
-.roadmap-list li {
-  background: radial-gradient(circle at left, rgba(0, 234, 255, 0.18), #001527);
-  margin: 12px auto;
-  padding: 15px 18px;
-  border-left: 4px solid #00eaff;
-  width: 60%;
-  max-width: 720px;
-  border-radius: 10px;
-  box-shadow: 0 0 16px rgba(0, 234, 255, 0.25);
-}
-
-/* ========== SCROLL REVEAL ========== */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: 1s ease;
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0px);
-}
-
-/* ========== GAMEFI ANIM ========== */
-.gamefi-anim {
-  width: 180px;
-  animation: moveHero 6s infinite linear;
-}
-
-@keyframes moveHero {
-  0%   { transform: translateX(-50px); }
-  50%  { transform: translateX(50px); }
-  100% { transform: translateX(-50px); }
-}
-
-/* ========== RIPPLE EFFECT ========== */
-#ripple {
-  position: fixed;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  pointer-events: none;
-  transform: scale(0);
-  background: rgba(0, 234, 255, 0.4);
-  animation: rippleAnim 0.6s ease-out;
-  mix-blend-mode: screen;
-  z-index: 999;
-}
-
-@keyframes rippleAnim {
-  from { transform: scale(0); opacity: 1; }
-  to   { transform: scale(5); opacity: 0; }
-}
-
-/* ========== LIGHTNING ZONE ========== */
-.lightning-zone {
-  position: relative;
-}
-
-.lightning-zone.flash {
-  background: radial-gradient(circle, #ffffff55, transparent);
-  transition: 0.2s;
-}
-
-/* ========== GLOBAL UL RESET ========== */
-ul {
-  list-style: none;
-  padding: 0;
-  margin-left: 0;
-}
-
-/* HOME UL OVERRIDE (ALS JE .home SECTION HEBT) */
-.home ul {
-  list-style: none;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-/* GLOW LISTS IN HOME SECTION */
-.home li {
-  background: radial-gradient(circle at 0%, rgba(0, 234, 255, 0.15), transparent);
-  margin: 10px;
-  padding: 15px;
-  border-radius: 14px;
-  font-size: 18px;
-  border: 1px solid rgba(0, 234, 255, 0.4);
-  box-shadow: 0 0 20px rgba(0, 234, 255, 0.25);
-}
-/* ========== FOOTER ========== */
-footer {
-  text-align: center;
-  background: #111827;
-  padding: 20px;
-  font-size: 14px;
-  color: #aaa;
-  border-top: 1px solid rgba(0, 240, 255, 0.18);
-  box-shadow: 0 -8px 24px rgba(0, 240, 255, 0.18);
-}
-
-/* ========== PARTICLES LAYERS ========== */
-#particles-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -3;
-}
-
-#particles-home {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  pointer-events: none;
-}
-
-#home {
-  position: relative;
-  overflow: hidden;
-}
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 1024px) {
-  .section {
-    padding: 110px 24px 70px;
-  }
-
-  .token-box,
-  .roadmap-list li {
-    width: 80%;
-  }
-}
-
-@media (max-width: 768px) {
-
-  .navbar {
-    padding: 10px 16px;
-  }
-
-  .logo {
-    font-size: 20px;
-  }
-
-  /* hamburger aan op mobiel */
-  .hamburger {
-    display: flex;
-  }
-
-  /* nav links als slide-in menu */
-  .nav-links {
-    position: absolute;
-    top: 64px;
-    right: -100%;
-    background: rgba(3, 7, 20, 0.95);
-    flex-direction: column;
-    width: 70%;
-    max-width: 260px;
-    padding: 18px 16px;
-    border-radius: 18px 0 0 18px;
-    transition: right 0.35s ease-out;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-  }
-
-  .nav-links.active {
-    right: 10px;
-  }
-
-  nav ul {
-    background: transparent;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  nav ul li {
-    margin: 0;
-  }
-
-  nav ul li a {
-    display: block;
-    width: 100%;
-    text-align: left;
-  }
-
-  .section {
-    padding: 100px 16px 60px;
-  }
-
-  .glow-text {
-    font-size: 30px;
-  }
-
-  .token-box,
-  .roadmap-list li {
-    width: 90%;
-  }
-
-  .floating-nfts {
-    gap: 20px;
-  }
-
-  .nft-card {
-    width: 160px;
-    height: 160px;
-  }
-
-  .welcome-box {
-    width: 92%;
-  }
-}
-
-@media (max-width: 480px) {
-  .glow-text {
-    font-size: 26px;
-  }
-
-  .btn {
-    width: 100%;
-    max-width: 260px;
-  }
-
-  .token-box,
-  .roadmap-list li {
-    width: 95%;
-  }
-
-  .gamefi-anim {
-    width: 140px;
-  }
-}
-</style>
-
+  <!-- ---- Styles ---- -->
+  <style>
+    :root{
+      --accent: #00eaff;
+      --bg: #071024;
+      --card-bg: #0b1622;
+      --muted: #98a3b3;
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#06101a 0%, #071827 60%);
+      color: #e6faff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* particles canvas wrapper - sits behind everything */
+    #particles-wrapper{
+      position:fixed;
+      inset:0;
+      z-index:0; /* behind content */
+      pointer-events:none; /* clicks pass through */
+    }
+
+    /* page container sits above particles */
+    .page {
+      position:relative;
+      z-index:1;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ---- NAVBAR ---- */
+    nav {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      padding:14px 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      position:sticky;
+      top:0;
+      z-index:5;
+    }
+
+    .nav-left, .nav-right {
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+
+    /* Logo image: limit its height so it doesn't blow up the navbar */
+    .nav-logo {
+      display:block;
+      height:44px;          /* <-- change this to make logo smaller/bigger */
+      max-height:48px;
+      width:auto;
+      object-fit:contain;
+      border-radius:8px;
+      background: rgba(255,255,255,0.02);
+      padding:4px;
+    }
+
+    .nav-links a {
+      color:var(--muted);
+      text-decoration:none;
+      padding:6px 10px;
+      border-radius:6px;
+      font-size:15px;
+    }
+    .nav-links a:hover{ color:var(--accent); }
+
+    /* ---- HERO / WELCOME ---- */
+    .hero {
+      padding:72px 26px 40px;
+      display:flex;
+      gap:36px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .hero-content {
+      max-width:720px;
+    }
+
+    h1{
+      font-size:44px;
+      margin:0 0 10px;
+      line-height:1.05;
+      color: #e6fbff;
+    }
+    p.lead{ color:var(--muted); margin:0 0 18px; font-size:16px; }
+
+    /* Call to action */
+    .cta {
+      display:flex;
+      gap:12px;
+      margin-top:18px;
+    }
+    .btn {
+      padding:12px 18px;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      background:linear-gradient(90deg,var(--accent), #46f1ff);
+      color:#001219;
+      font-weight:600;
+      box-shadow:0 6px 20px rgba(0,234,255,0.12);
+    }
+    .btn.secondary{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid rgba(0,234,255,0.08);
+      box-shadow:none;
+    }
+
+    /* ---- Image container + hover effects ---- */
+    .image-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap:18px;
+      margin-top:16px;
+    }
+    .image-card {
+      width:200px;           /* default card size - change as needed */
+      height:200px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      transition:transform .28s ease, box-shadow .28s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    }
+    .image-card img {
+      width:100%;
+      height:100%;
+      object-fit:cover; /* ensures the image fills the box without stretching */
+      border-radius:10px;
+      display:block;
+      transition: transform .35s ease, filter .35s ease;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));
+    }
+    .image-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 32px rgba(0,234,255,0.12);
+    }
+    .image-card:hover img {
+      transform: scale(1.06);
+      filter: drop-shadow(0 22px 30px rgba(0,234,255,0.12));
+    }
+
+    /* ---- Lists: remove bullets & containerize ---- */
+    .list-container {
+      background: var(--card-bg);
+      border-radius:12px;
+      padding:18px;
+      margin:12px 0;
+    }
+    .list-container ul {
+      list-style:none;     /* <-- removes bullets */
+      padding-left:0;
+      margin:0;
+    }
+    .list-container li {
+      padding:8px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.03);
+    }
+    .list-container li:last-child { border-bottom: none; }
+
+    /* separating multiple lists */
+    .list-divider { height:14px; } /* add between lists to separate visually */
+
+    /* ---- NFT Box: force inside container ---- */
+    .nft-box {
+      width:340px;
+      height:340px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      overflow:hidden; /* ensures NFT does not escape the box */
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px;
+    }
+    .nft-box img {
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain; /* keeps aspect ratio, fits inside */
+      border-radius:10px;
+      transition: transform .3s ease;
+    }
+    .nft-box img:hover { transform: scale(1.04); }
+
+    /* ---- ROADMAP - curvy svg + waves behind ---- */
+    .roadmap-wrap {
+      position:relative;
+      padding:64px 26px;
+      min-height:420px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:visible;
+    }
+
+    /* wave layer (behind roadmap) */
+    .waves {
+      position:absolute;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:0.85;
+    }
+    .roadmap-content {
+      position:relative;
+      z-index:2;
+      width:100%;
+      max-width:1100px;
+    }
+
+    .roadmap-svg { width:100%; height:280px; }
+
+    /* roadmap markers styling */
+    .marker {
+      fill: #00eaff;
+      stroke: #05202a;
+      stroke-width:2;
+      filter: drop-shadow(0 8px 18px rgba(0,234,255,0.12));
+    }
+    .marker-label {
+      fill:#e8fbff;
+      font-size:13px;
+    }
+
+    /* wave animation (translate) */
+    @keyframes waveMove {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .wave-row {
+      display:flex;
+      width:200%;
+      height:80px;
+      transform: translateX(0);
+      animation: waveMove 12s linear infinite;
+      opacity:0.55;
+    }
+    /* small responsive tweaks */
+    @media (max-width:900px){
+      .hero{ flex-direction:column; align-items:flex-start; }
+      .nft-box{ width:260px; height:260px; }
+      .image-card{ width:150px; height:150px; }
+    }
+
+    /* footer */
+    footer {
+      padding:26px;
+      text-align:center;
+      color:var(--muted);
+      background:linear-gradient(180deg, transparent, rgba(255,255,255,0.01));
+      border-top:1px solid rgba(255,255,255,0.02);
+    }
+  </style>
 </head>
 <body>
 
