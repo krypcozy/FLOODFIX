@@ -7,6 +7,11 @@
 
   <!-- ---- Styles ---- -->
   <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     :root{
       --accent: #00eaff;
       --bg: #071024;
@@ -83,7 +88,48 @@
       font-size:15px;
     }
     .nav-links a:hover{ color:var(--accent); }
+    nav ul {
+    display: flex;
+    list-style: none;
+    background: rgba(10, 15, 30, 0.7);
+   border-radius: 999px;
+    border: 1px solid rgba(0, 240, 255, 0.25);
+   box-shadow: 0 0 18px rgba(0, 240, 255, 0.18);
+    padding: 6px 10px;
+}
+    nav ul li {
+    margin: 0 6px;
+    }
+    nav ul li a {
+    color: #f1f1f1;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    transition: color 0.3s, background 0.3s, box-shadow 0.3s, transform 0.15s;
+}
 
+    nav ul li a:hover {
+    color: #0a0f1c;
+    background: linear-gradient(135deg, #00f0ff, #ff007a);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+    transform: translateY(-1px);
+    }
+    nav ul li a.active {
+    color: #0a0f1c;
+    background: linear-gradient(135deg, #ff007a, #00f0ff);
+    box-shadow: 0 0 20px rgba(255, 0, 122, 0.8);
+    }
+
+     /* Mobile menu icon (hidden by default) */
+     .menu-toggle {
+      display: none;
+      font-size: 26px;
+      color: #00f0ff;
+      cursor: pointer;
+     }
+  
     /* ---- HERO / WELCOME ---- */
     .hero {
       padding:72px 26px 40px;
@@ -298,13 +344,15 @@
         <img src="f5.jpg" alt="FloodFix logo" class="nav-logo" />
 
         <div class="nav-links">
-          <a href="#home">Home</a>
-          <a href="#buy">Flox Buy</a>
-          <a href="#tokenomics">Tokenomics</a>
-          <a href="#nft">Flox NFT</a>
-          <a href="#roadmap">Roadmap</a>
-          <a href="#whitepaper">Whitepaper</a>
-          <a href="#gamefi">GameFi</a>
+          <ul>
+             <li><a href="#home">Home</a></li>
+             <li><a href="#buy">Flox Buy</a></li>
+             <li><a href="#tokenomics">Tokenomics</a></li>
+             <li><a href="#nft">Flox NFT</a></li>
+             <li><a href="#roadmap">Roadmap</a></li>
+             <li><a href="#whitepaper">Whitepaper</a></li>
+            <li><a href="#gamefi">GameFi</a></li>
+          </ul>
         </div>
       </div>
 
@@ -313,7 +361,8 @@
         <a class="btn secondary" href="#whitepaper">Whitepaper</a>
       </div>
     </nav>
-
+    <!-- Mobile menu icon -->
+    <div class="menu-toggle">☰</div>
     <!-- HERO / HOME -->
     <header id="home" class="hero">
       <div class="hero-content">
