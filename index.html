@@ -198,12 +198,15 @@
 }
 /* 🌊 Stronger Water Glow */
 .waves svg path {
-  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.45));
+  filter: drop-shadow(0 0 20px rgba(0, 238, 255, 0.578));
 }
 
 #bubble-layer {
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 118px; /*bubble zone height*/
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
@@ -231,7 +234,7 @@
   </style>
 </head>
 <body>
-  <!-- particles container -->
+<!-- particles container -->
   <!-- BACKGROUND PARTICLES -->
 <div id="particles-wrapper">
   <div id="tsparticles" style="position: absolute; inset: 0;"></div>
@@ -388,11 +391,14 @@
           </div>
         </div>
       </div>
+      
     </section>
     <section id="water-zone">
+
     <!-- Waves SVG -->
     <div id="bubble-layer"></div> <!-- Only this one -->
     <div id="underwater-fog"></div>
+    
 </section>
 
     <!-- Whitepaper -->
@@ -426,6 +432,11 @@
         </ul>
       </div>
     </section>
+    <!-- Bubble Zone Before Footer -->
+<section id="water-zone">
+  <div id="bubble-layer"></div>
+  <div id="underwater-fog"></div>
+</section>
 
     <footer>© <strong>FloodFix🌊</strong> | All rights reserved.</footer>
   </div>
@@ -566,6 +577,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // spawn bubbles continuously
   setInterval(spawnBubble, 350);
+</script>
+<script>
+function spawnBubbles() {
+  const layer = document.getElementById("bubble-layer");
+  if (!layer) return;
+
+  setInterval(() => {
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+
+    // Random bubble size
+    const size = Math.random() * 18 + 8; 
+    bubble.style.width = size + "px";
+    bubble.style.height = size + "px";
+
+    // Random horizontal start
+    bubble.style.left = Math.random() * 100 + "%";
+
+    // Random rise speed
+    bubble.style.setProperty("--speed", (4 + Math.random() * 4) + "s");
+
+    layer.appendChild(bubble);
+
+    // Remove bubble when finished
+    setTimeout(() => bubble.remove(), 7000);
+  }, 350);
+}
+
+spawnBubbles();
 </script>
 
 </body>
